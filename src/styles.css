@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0a0a0b;
+  --color-surface: #121214;
+  --color-raised: #1a1a1e;
+  --color-fg: #f4f4f5;
+  --color-muted: #a1a1aa;
+  --color-subtle: #71717a;
+  --color-accent: #c8ccd4;
+  --color-accent-fg: #0a0a0b;
+  --color-border: #26262c;
+  --color-line: #2e2e36;
+  --color-danger: #c45c5c;
+  --color-ok: #6f9e7a;
+  --color-warn: #c4a35c;
+  --font-sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+}
+
+:root[data-theme="light"] {
+  --color-bg: #f4f4f2;
+  --color-surface: #ffffff;
+  --color-raised: #ecece8;
+  --color-fg: #141416;
+  --color-muted: #5c5c64;
+  --color-subtle: #8a8a92;
+  --color-accent: #2a2c32;
+  --color-accent-fg: #f4f4f2;
+  --color-border: #d6d6d0;
+  --color-line: #c8c8c2;
+}
+
+@layer base {
+  html,
+  body,
+  #app {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  * {
+    box-sizing: border-box;
+  }
+}
+
+.app-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 0;
+  flex: 1;
+  position: relative;
+}
+.app-console,
+.app-inspector {
+  display: none;
+  min-height: 0;
+}
+@media (min-width: 768px) {
+  .app-body {
+    grid-template-columns: 18rem minmax(0, 1fr);
+  }
+  .app-console {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--color-border);
+  }
+}
+@media (min-width: 1024px) {
+  .app-body {
+    grid-template-columns: 18rem minmax(0, 1fr) 18rem;
+  }
+  .app-inspector {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--color-border);
+  }
+}
+
+.graph-stage {
+  background-color: var(--color-bg);
+  background-image:
+    linear-gradient(var(--color-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
+}
+
+.field {
+  width: 100%;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-fg);
+  padding: 0.4rem 0.55rem;
+  font-size: 0.8125rem;
+}
+.field:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
