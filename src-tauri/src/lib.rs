@@ -1,5 +1,7 @@
 use serde::Serialize;
 
+mod ai_cli;
+
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DesktopInfo {
@@ -20,7 +22,11 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_dialog::init())
-        .invoke_handler(tauri::generate_handler![desktop_info])
+        .invoke_handler(tauri::generate_handler![
+            desktop_info,
+            ai_cli::ai_cli_available,
+            ai_cli::run_ai_cli
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

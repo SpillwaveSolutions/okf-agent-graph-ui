@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ApiAiBackendsRouteImport } from './routes/api/ai/backends'
+import { Route as ApiAiStreamRouteImport } from './routes/api/ai/stream'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +25,16 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAiBackendsRoute = ApiAiBackendsRouteImport.update({
+  id: '/api/ai/backends',
+  path: '/api/ai/backends',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAiStreamRoute = ApiAiStreamRouteImport.update({
+  id: '/api/ai/stream',
+  path: '/api/ai/stream',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -32,30 +44,45 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/api/ai/backends': typeof ApiAiBackendsRoute
+  '/api/ai/stream': typeof ApiAiStreamRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/api/ai/backends': typeof ApiAiBackendsRoute
+  '/api/ai/stream': typeof ApiAiStreamRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/api/ai/backends': typeof ApiAiBackendsRoute
+  '/api/ai/stream': typeof ApiAiStreamRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/api/auth/$'
+  fullPaths:
+    '/' | '/login' | '/api/ai/backends' | '/api/ai/stream' | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/api/auth/$'
-  id: '__root__' | '/' | '/login' | '/api/auth/$'
+  to: '/' | '/login' | '/api/ai/backends' | '/api/ai/stream' | '/api/auth/$'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/api/ai/backends'
+    | '/api/ai/stream'
+    | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  ApiAiBackendsRoute: typeof ApiAiBackendsRoute
+  ApiAiStreamRoute: typeof ApiAiStreamRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -75,6 +102,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/ai/backends': {
+      id: '/api/ai/backends'
+      path: '/api/ai/backends'
+      fullPath: '/api/ai/backends'
+      preLoaderRoute: typeof ApiAiBackendsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ai/stream': {
+      id: '/api/ai/stream'
+      path: '/api/ai/stream'
+      fullPath: '/api/ai/stream'
+      preLoaderRoute: typeof ApiAiStreamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -88,6 +129,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  ApiAiBackendsRoute: ApiAiBackendsRoute,
+  ApiAiStreamRoute: ApiAiStreamRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

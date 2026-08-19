@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useDesigner } from "@/lib/ager/store";
+import { BackendPicker } from "./backend-picker";
 
 export function ConsolePanel() {
   const [text, setText] = useState("");
   const messages = useDesigner((s) => s.messages);
   const generating = useDesigner((s) => s.generating);
+  const draftText = useDesigner((s) => s.draftText);
+  const draftStatus = useDesigner((s) => s.draftStatus);
   const compose = useDesigner((s) => s.compose);
   const loadSample = useDesigner((s) => s.loadSample);
   const newGraph = useDesigner((s) => s.newGraph);
@@ -12,7 +15,7 @@ export function ConsolePanel() {
 
   useEffect(() => {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight });
-  }, [messages.length]);
+  }, [messages.length, draftText, draftStatus]);
 
   function submit() {
     const next = text.trim();
@@ -26,11 +29,12 @@ export function ConsolePanel() {
       data-testid="console-panel"
       className="flex h-full min-h-0 flex-col bg-surface"
     >
-      <header className="flex items-center justify-between border-b border-border px-3 py-2.5">
+      <header className="flex items-center justify-between gap-2 border-b border-border px-3 py-2.5">
         <h2 className="text-xs font-medium tracking-wide text-muted uppercase">
           Describe the loop
         </h2>
-        <div className="flex gap-1">
+        <div className="flex items-center gap-1">
+          <BackendPicker />
           <button
             type="button"
             data-testid="load-sample"
@@ -69,6 +73,23 @@ export function ConsolePanel() {
             {m.text}
           </p>
         ))}
+        {generating && (
+          <div data-testid="console-stream" className="space-y-1">
+            {draftStatus && (
+              <p className="text-[10px] tracking-wide text-subtle uppercase">
+                {draftStatus}
+              </p>
+            )}
+            {draftText && (
+              <pre className="max-h-40 overflow-auto whitespace-pre-wrap rounded-sm bg-raised px-2.5 py-2 font-mono text-[11px] leading-relaxed text-muted">
+                {draftText}
+              </pre>
+            )}
+            {!draftText && !draftStatus && (
+              <p className="text-xs text-subtle">Drawing…</p>
+            )}
+          </div>
+        )}
       </div>
       <form
         className="border-t border-border p-3"

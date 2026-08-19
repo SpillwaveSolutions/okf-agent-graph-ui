@@ -6,6 +6,8 @@ import { emptyGraph, sampleResearchGraph } from "./sample";
 import { validateGraph, type Issue } from "./validate";
 import type { AgerGraph, AgerNode, ConsoleMessage, NodeKind } from "./types";
 import { nid } from "./types";
+import { useAiSettings } from "@/lib/ai/settings";
+import { backendLabel, streamCompose } from "@/lib/ai/stream-client";
 
 export type MainView = "graph" | "source" | "publish";
 
@@ -16,6 +18,8 @@ interface DesignerState {
   sourceTab: "okf" | "mermaid";
   messages: ConsoleMessage[];
   generating: boolean;
+  draftText: string;
+  draftStatus: string;
   lastError: string | null;
   theme: "dark" | "light";
   mobilePanel: "none" | "console" | "inspector";
@@ -51,6 +55,8 @@ export const useDesigner = create<DesignerState>()(
         ),
       ],
       generating: false,
+      draftText: "",
+      draftStatus: "",
       lastError: null,
       theme: "dark",
       mobilePanel: "none",
@@ -129,26 +135,32 @@ export const useDesigner = create<DesignerState>()(
       compose: async (prompt) => {
         const trimmed = prompt.trim();
         if (!trimmed || get().generating) return;
+        const backend = useAiSettings.getState().backend;
         set({
           generating: true,
           lastError: null,
+          draftText: "",
+          draftStatus: `Starting ${backendLabel(backend)}…`,
           messages: [...get().messages, stamp(trimmed, "user")],
         });
         try {
-          const { composeGraph } = await import("@/lib/ai/compose");
-          const result = await composeGraph({
-            data: { prompt: trimmed, current: get().graph },
+          const result = await streamCompose({
+            prompt: trimmed,
+            current: get().graph,
+            backend,
+            onToken: (_piece, full) => set({ draftText: full, draftStatus: "" }),
+            onStatus: (message) => set({ draftStatus: message }),
           });
-          if (result.ok) {
+          if (result.graph) {
             set({
               graph: result.graph,
               generating: false,
+              draftText: "",
+              draftStatus: "",
               messages: [
                 ...get().messages,
                 stamp(
-                  result.source === "ai"
-                    ? `Drew ${result.graph.nodes.length} nodes with Grok.`
-                    : `Drew ${result.graph.nodes.length} nodes locally.`,
+                  `Drew ${result.graph.nodes.length} nodes with ${backendLabel(result.source)}.`,
                   "system",
                 ),
               ],
@@ -159,6 +171,8 @@ export const useDesigner = create<DesignerState>()(
           set({
             graph,
             generating: false,
+            draftText: "",
+            draftStatus: "",
             lastError: result.error,
             messages: [
               ...get().messages,
@@ -173,6 +187,8 @@ export const useDesigner = create<DesignerState>()(
           set({
             graph,
             generating: false,
+            draftText: "",
+            draftStatus: "",
             lastError: err instanceof Error ? err.message : "Compose failed",
             messages: [
               ...get().messages,

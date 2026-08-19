@@ -29,6 +29,10 @@ npm run tauri:build      # native binary + installers
 
 This sandbox often lacks GTK/WebKit, so `tauri build` may fail here even when the sources are correct. Build installers on a desktop host.
 
+## AI backends
+
+Desktop AI uses the same CLIs as Forge Notes (`claude`, `codex`, `grok`) via `src-tauri/src/ai_cli.rs`. The web preview streams them through `POST /api/ai/stream`. Pick the backend in the console header.
+
 ## Layout
 
 ```
@@ -36,7 +40,8 @@ src-tauri/
   tauri.conf.json     product name, window, bundle
   Cargo.toml
   capabilities/       shell + dialog
-  src/lib.rs          desktop_info command
+  src/lib.rs          desktop_info + AI CLI
+  src/ai_cli.rs       claude / codex / grok spawn + stream
   icons/
 src/lib/tauri.ts      isTauri() + getDesktopInfo()
 ```

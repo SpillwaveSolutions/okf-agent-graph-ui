@@ -6,7 +6,7 @@ Compile adapters (later, separate build): Claude Code, Grok Build, Codex, LangCh
 
 ## This slice
 
-- Console → graph (Grok when available, local compose otherwise)
+- Console → graph via **Claude Code / Codex / Grok CLI** (same streaming path as Forge Notes), or Grok API / local compose
 - Clickable canvas + inspector (LoopPolicy `on_goal` / `on_exhaust` / controls)
 - OKF bundle + Mermaid source
 - Sample parallel research graph
