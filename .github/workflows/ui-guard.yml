@@ -1,0 +1,27 @@
+name: UI Guard
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main, master]
+
+jobs:
+  wireframe-check:
+    name: Wireframe + adversarial contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check wireframe structure and UI diffs
+        env:
+          UI_GUARD_STRICT: "1"
+          UI_GUARD_BASE: "origin/${{ github.event.pull_request.base.ref || github.event.repository.default_branch }}"
+          UI_GUARD_PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if [ ! -f scripts/check-ui-guard.sh ]; then
+            echo "UI Guard FAIL: scripts/check-ui-guard.sh is missing"
+            exit 1
+          fi
+          bash scripts/check-ui-guard.sh
